@@ -48,23 +48,4 @@ compilers.tmpl = (path) ->
 require.extensions['.tmpl'] = (module, filename) -> 
   module._compile(compilers.tmpl(filename))
   
-try
-  stylus = require('stylus')
-  
-  compilers.styl = (path) ->
-    content = fs.readFileSync(path, 'utf8')
-    result = ''
-    stylus(content)
-      .include(dirname(path))
-      .render((err, css) -> 
-        throw err if err
-        result = css
-      )
-    result
-    
-  require.extensions['.styl'] = (module, filename) -> 
-    source = JSON.stringify(compilers.styl(filename))
-    module._compile "module.exports = #{source}", filename
-catch err
-
 module.exports = compilers

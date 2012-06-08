@@ -4,7 +4,6 @@ optimist  = require('optimist')
 strata    = require('strata')
 compilers = require('./compilers')
 pkg       = require('./package')
-css       = require('./css')
 specs     = require('./specs')
 
 argv = optimist.usage([
@@ -32,13 +31,11 @@ class Hem
 
   options:
     slug:         './slug.json'
-    css:          './css'
     libs:         []
     public:       './public'
     paths:        ['./app']
     dependencies: []
     port:         process.env.PORT or argv.port or 9294
-    cssPath:      '/application.css'
     jsPath:       '/application.js'
 
     test:         './test'
@@ -46,6 +43,7 @@ class Hem
     testPath:     '/test'
     specs:        './test/specs'
     specsPath:    '/test/specs.js'
+    minify:       true
 
   constructor: (options = {}) ->
     @options[key] = value for key, value of options
@@ -54,7 +52,6 @@ class Hem
   server: ->
     strata.use(strata.contentLength)
 
-    strata.get(@options.cssPath, @cssPackage().createServer())
     strata.get(@options.jsPath, @hemPackage().createServer())
 
     if path.existsSync(@options.specs)
@@ -70,15 +67,13 @@ class Hem
     strata.run(port: @options.port)
 
   build: ->
-    source = @hemPackage().compile(not argv.debug)
+    source = @hemPackage().compile(@options.minify)
     fs.writeFileSync(path.join(@options.public, @options.jsPath), source)
 
-    source = @cssPackage().compile()
-    fs.writeFileSync(path.join(@options.public, @options.cssPath), source)
 
   watch: ->
     @build()
-    for dir in (path.dirname(lib) for lib in @options.libs).concat @options.css, @options.paths
+    for dir in (path.dirname(lib) for lib in @options.libs).concat @options.paths
       continue unless path.existsSync(dir)
       require('watch').watchTree dir, (file, curr, prev) =>
         if curr and (curr.nlink is 0 or +curr.mtime isnt +prev?.mtime)
@@ -98,8 +93,6 @@ class Hem
     return {} unless slug and path.existsSync(slug)
     JSON.parse(fs.readFileSync(slug, 'utf-8'))
 
-  cssPackage: ->
-    css.createPackage(@options.css)
 
   hemPackage: ->
     pkg.createPackage(
