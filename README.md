@@ -1,12 +1,12 @@
-#Introduction
-
-Hem is a project for compiling CommonJS modules when building JavaScript web applications. You can think of Hem as [Bundler](http://gembundler.com/) for Node, or [Stitch](https://github.com/sstephenson/stitch) on steroids. 
-
-This is rather awesome, as it means you don't need to faff around with coping around JavaScript files. jQuery can be a npm dependency, so can jQueryUI and all your custom components. Hem will resolve dependencies dynamically, bundling them together into one file to be served up. Upon deployment, you can serialize your application to disk and serve it statically. 
+#reahem
+This is modified version of standart hem.
+Modifications:
+- Removed support for stylys.
+- Added "minify" option to slug.json to support toggling minify option.
 
 #Installation
 
-    npm install -g hem
+    npm install -g reahem
 
 #Usage
 
