@@ -1,8 +1,8 @@
 #reahem
 This is modified version of standart hem.
-Modifications:
+- Modifications:
 - Removed support for stylys.
-- Added "minify" option to slug.json to support toggling minify option.
+- Added "minify" option to slug.json to toggel minify status.
 
 #Installation
 
